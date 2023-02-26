@@ -1,13 +1,15 @@
 document.addEventListener("mouseup", selectionCheck);
 const colorReg = /^#([0-9a-fA-F]{3}){1,2}$/;
-injectHtml();
+let poppySettings = {};
 let hovering = false;
+injectHtml();
 
 // No clue if this is the best way to do this!
 async function injectHtml(){
+  await loadSettings();
   const rootEl = document.documentElement;
-  const url = browser.extension.getURL("PoppyHex.html");
-  var cssUrl = browser.extension.getURL("PoppyHex.css");
+  const url = browser.extension.getURL("./src/popup/PoppyHex.html");
+  var cssUrl = browser.extension.getURL("./src/popup/PoppyHex.css");
 
   const link = document.createElement("link");
   link.rel = "stylesheet";
@@ -45,15 +47,16 @@ function selectionCheck(){
   checkSelectionForColor(selection.trim());
 }
 
-function checkSelectionForColor(str){
+async function checkSelectionForColor(str){
   if (hovering) return; 
+  if (await isRestricted(str)) return;
   // Slap a # if missing.
   if (str[0] != '#') str = `#${str}`;
   let res = colorReg.exec(str);
   const el = document.getElementById('poppy-container');
   if (res){
     setHex(str);
-    el.style.right = '20px';
+    openPopup();
   } else {
     closePopup();
   }
@@ -64,6 +67,11 @@ function closePopup(){
     const el = document.getElementById('poppy-container');
     el.style.right = '-250px';
   }
+}
+
+function openPopup(){
+  const el = document.getElementById('poppy-container');
+  el.style.right = '20px';
 }
 
 function setListeners(){
@@ -136,4 +144,40 @@ function hex3_to_hex6(str) {
     hex6 += tempStr[i] + tempStr[i];
   }
   return hex6;
+}
+
+async function loadSettings(){
+  const res = await browser.storage.sync.get('poppySettings');
+  poppySettings = res.poppySettings;
+  poppySettings = poppySettings ? JSON.parse(poppySettings) : {};
+  console.log('Loaded settings: ', poppySettings);
+}
+
+async function isRestricted(str){
+  // Let regex naturally reject.
+  if (str.length < 3 || str.length > 7) return false;
+  // Refresh settings.
+  await loadSettings();
+
+  // disable: t/f
+  // includeHash: t/f
+  // includeHashThree: t/f
+  // sixDigit: t/f
+
+  if (poppySettings.disable) return true;
+
+  if (poppySettings.includeHash){
+    if (str[0] != '#') return true;
+  }
+
+  if (poppySettings.includeHashThree){
+    if (str.length <= 4 && str[0] != '#') return true;
+  }
+
+  if (poppySettings.sixDigit){
+    if (str.length < 6) return true;
+  }
+
+  return false;
+
 }

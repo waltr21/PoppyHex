@@ -6,14 +6,28 @@
 
   "description": "Temp descrip",
 
-  "permissions": [],
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
 
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["PoppyHex.js"],
+      "js": ["./src/popup/PoppyHex.js"],
       "run_at": "document_end"
     }
-  ]
+  ],
+
+  "browser_action": {
+    "default_title": "PoppyHex",
+    "default_popup": "./src/menu/menu.html"
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "poppyhex@example.com"
+    }
+  }
 
 }

@@ -33,8 +33,9 @@
   border: solid white 2px;
   margin: auto;
   margin-top: auto;
-  border-radius: 5px;
+  border-radius: 150px;
   transition: all 0.25s linear;
+  background-color: #000;
 }
 
 .copy-options{
@@ -64,7 +65,7 @@
 }
 
 .copy-option:hover{
-  color: #FFD700;
+  text-decoration: underline;
 }
 
 .poppy-watermark{

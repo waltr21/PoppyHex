@@ -1,0 +1,47 @@
+html{
+  background-color: #202124;
+}
+
+.menu-body{
+  width: 400px;
+  height: fit-content;
+  color: white;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.menu-title{
+  width: 80%;
+  text-align: center;
+  border-bottom: 1px solid gray;
+  margin: auto;
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+}
+
+.option{
+  position: relative;
+  font-size: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+.option-label{
+  margin-right: 20px;
+}
+
+.option-response{
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 0px;
+  cursor: pointer;
+}
+
+.option-descrip{
+  font-size: 15px;
+  padding: 0px;
+  margin-top: 5px;
+  font-style: italic;
+  color: #aaaaaa;
+}

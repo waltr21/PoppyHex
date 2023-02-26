@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="menu.css" />
+    <title>PoppyHex</title>
+  </head>
+  <body class="menu-body">
+    <h1 class="menu-title">PoppyHex</h1>
+    <div class="options-container">
+      <div class="option">
+        <label class="option-label" for="includeHash">Disable?</label>
+        <input class="option-response" type="checkbox" id="disable" name="includeHash">
+        <p class="option-descrip">
+          Quick disable for PoppyHex. To completey disable, remove the add-on in your Firefox settings.
+        </p>
+      </div>
+      <div class="option">
+        <label class="option-label" for="includeHash">Disable for this site?</label>
+        <input class="option-response" type="checkbox" id="disableForSite" name="includeHash">
+        <p class="option-descrip">
+          Prevent PoppyHex from running on this site. Requires a page refresh.
+        </p>
+      </div>
+      <div class="option">
+        <label class="option-label" for="includeHash">Must include #?</label>
+        <input class="option-response" type="checkbox" id="includeHash" name="includeHash">
+        <p class="option-descrip">
+          Highlighted Hex codes must be prefaced with a '#'. Ignored otherwise. This includes 3 digit codes.
+        </p>
+      </div>
+      <div class="option">
+        <label class="option-label" for="includeHash">Must be 6 digit codes?</label>
+        <input class="option-response" type="checkbox" id="sixDigit" name="includeHash">
+        <p class="option-descrip">
+          Highlighted Hex codes must be 6 digits in length. All 3 digit codes will be ignored.
+        </p>
+      </div>
+      <div class="option">
+        <label class="option-label" for="includeHash">Must include # for 3 digit codes?</label>
+        <input class="option-response" type="checkbox" id="includeHashThree" name="includeHash">
+        <p class="option-descrip">
+          3 digit highlighted hex codes must be prefaced with a '#'. Ignored otherwise.
+        </p>
+      </div>
+    </div>
+  </body>
+  <script src="menu.js"></script>
+</html>
