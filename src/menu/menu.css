@@ -2,21 +2,48 @@ html{
   background-color: #202124;
 }
 
-.menu-body{
-  width: 400px;
-  height: fit-content;
-  color: white;
-  font-family: Helvetica, Arial, sans-serif;
+@font-face {
+  font-family: tiltNeon;
+  src: url(./../../fonts/TiltNeon-Regular.ttf);
 }
 
-.menu-title{
+.menu-body{
+  width: 450px;
+  height: fit-content;
+  color: white;
+  font-family: tiltNeon;
+}
+
+.title-icon{
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  /* Yea idk. Images are weird. */
+  position: absolute;
+  top: 8px;
+  left: 66px;
+}
+
+.title-container{
+  display: flex;
   width: 80%;
-  text-align: center;
+  width: 80%;
   border-bottom: 1px solid gray;
   margin: auto;
   margin-bottom: 20px;
   padding-bottom: 5px;
+  text-align: center;
+  position: relative;
 }
+
+.menu-title{
+  width: 100%;
+  text-align: center;
+  margin: 0px;
+}
+
 
 .option{
   position: relative;
@@ -36,6 +63,7 @@ html{
   position: absolute;
   right: 0px;
   cursor: pointer;
+  border-radius: 20px;
 }
 
 .option-descrip{
@@ -44,4 +72,28 @@ html{
   margin-top: 5px;
   font-style: italic;
   color: #aaaaaa;
+}
+
+.host-name{
+  font-size: 15px;
+  font-style: italic;
+}
+
+.bold{
+  font-weight: bolder;
+  text-decoration: underline;
+}
+
+.valid-container{
+  margin: 10px;
+  text-align: right;
+  color: #aaaaaa;
+  font-size: 18px;
+}
+
+.signature{
+  color: gray;
+  text-align: right;
+  margin-right: 10px;
+  font-size: 13px;
 }

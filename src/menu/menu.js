@@ -22,34 +22,72 @@ function setListeners(){
   });
 }
 
+async function setUIHelpers(){
+  const el = document.getElementById('host-name');
+  el.innerText = await getPage();
+
+  let validExamples = ['#5f4b8a', '5f4b8a', '#5f4', '5f4'];
+  const validEl = document.getElementById('valid-codes');
+
+  if (poppySettings.includeHash){
+    spliceHelper(validExamples, validExamples.indexOf('5f4b8a'));
+    spliceHelper(validExamples, validExamples.indexOf('5f4'));
+  }
+
+  if (poppySettings.sixDigit){
+    spliceHelper(validExamples, validExamples.indexOf('#5f4'));
+    spliceHelper(validExamples, validExamples.indexOf('5f4'));
+  }
+
+  if (poppySettings.includeHashThree){
+    spliceHelper(validExamples, validExamples.indexOf('5f4'));
+  }
+
+  validEl.innerText = validExamples.join(', ');
+}
+
+function spliceHelper(arr, index){
+  if (index < 0) return;
+  arr.splice(index,1);
+}
+
 async function loadSettings(){
   const res = await browser.storage.sync.get('poppySettings');
   poppySettings = res.poppySettings;
   poppySettings = poppySettings ? JSON.parse(poppySettings) : {};
 
-  console.log('Loaded: ', poppySettings);
-
   const basicChecks = [disable, includeHash, sixDigit, includeHashThree];
   basicChecks.forEach(check => {
     check.checked = poppySettings[check.id];
   });
+
+  const blacklist = poppySettings.blacklist ? poppySettings.blacklist : [];
+  const hostName = await getPage();
+  if (blacklist.indexOf(hostName) >= 0){
+    disableForSite.checked = true;
+  } else {
+    disableForSite.checked = false;
+  }
+
+  setUIHelpers();
 }
 
 function updateBasicSetting(key, val){
-  console.log(`${key}, ${val}`);
   poppySettings[key] = val;
-  //localStorage.setItem(settingName, JSON.stringify(poppySettings));
   browser.storage.sync.set({
     poppySettings: JSON.stringify(poppySettings)
   });
-  console.log(poppySettings);
+  setUIHelpers();
 }
 
 async function updateBlacklist(val){
   const host = await getPage();
-  console.log('HOST: ', host);
   const blacklist = poppySettings.blacklist ? poppySettings.blacklist : [];
   const index = blacklist.indexOf(host);
+
+  // handles firefox homepage blank hostname.
+  if (!host) return;
+
   if (val){
     // Make sure it is not already added. Else just ignore.
     if (index < 0){
@@ -66,7 +104,6 @@ async function updateBlacklist(val){
   browser.storage.sync.set({
     poppySettings: JSON.stringify(poppySettings)
   });
-  console.log(poppySettings);
 }
 
 // https://stackoverflow.com/questions/11594576/getting-current-browser-url-in-firefox-addon

@@ -1,4 +1,3 @@
-document.addEventListener("mouseup", selectionCheck);
 const colorReg = /^#([0-9a-fA-F]{3}){1,2}$/;
 let poppySettings = {};
 let hovering = false;
@@ -7,6 +6,16 @@ injectHtml();
 // No clue if this is the best way to do this!
 async function injectHtml(){
   await loadSettings();
+
+  // Stop HTML injection if site is blacklisted.
+  const hostName = window.location.hostname;
+  const blacklist = poppySettings.blacklist ? poppySettings.blacklist : [];
+  if (blacklist.indexOf(hostName) >= 0){
+    return;
+  }
+
+  document.addEventListener("mouseup", selectionCheck);
+
   const rootEl = document.documentElement;
   const url = browser.extension.getURL("./src/popup/PoppyHex.html");
   var cssUrl = browser.extension.getURL("./src/popup/PoppyHex.css");
@@ -150,7 +159,6 @@ async function loadSettings(){
   const res = await browser.storage.sync.get('poppySettings');
   poppySettings = res.poppySettings;
   poppySettings = poppySettings ? JSON.parse(poppySettings) : {};
-  console.log('Loaded settings: ', poppySettings);
 }
 
 async function isRestricted(str){
