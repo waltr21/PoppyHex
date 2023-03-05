@@ -1,4 +1,6 @@
-const colorReg = /^#([0-9a-fA-F]{3}){1,2}$/;
+const hexReg = /^#([0-9a-fA-F]{3}){1,2}$/;
+const rgbReg = /^(?:\(|)(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\s*,\s*){2}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\)|)$/;
+
 let poppySettings = {};
 let hovering = false;
 injectHtml();
@@ -59,9 +61,19 @@ function selectionCheck(){
 async function checkSelectionForColor(str){
   if (hovering) return; 
   if (await isRestricted(str)) return;
+
+  let res = rgbReg.exec(str);
+  // Succesful RGB. Convert to hex and follow hex flow.
+  if (res){
+    str = str.replace('(', '');
+    str = str.replace(')', '');
+    const vals = str.split(',');
+    str = rgbToHex(vals[0], vals[1], vals[2]);
+  }
+
   // Slap a # if missing.
   if (str[0] != '#') str = `#${str}`;
-  let res = colorReg.exec(str);
+  res = hexReg.exec(str);
   const el = document.getElementById('poppy-container');
   if (res){
     setHex(str);
@@ -99,7 +111,7 @@ function setListeners(){
   
   const poppyContainer = document.getElementById('poppy-container');
   poppyContainer.addEventListener('mouseleave', function (event) {
-    setCopyHelper('Click to copy.');
+    setCopyHelper('Click to copy.', 'gray');
     hovering = false;
   });
 
@@ -110,15 +122,17 @@ function setListeners(){
 
 function copyToClip(str){
   navigator.clipboard.writeText(str);
-  setCopyHelper('Copied!');
+  setCopyHelper('Copied!', '#00FF66');
 }
 
-function setCopyHelper(str){
+function setCopyHelper(str, col){
   const el = document.getElementById('poppy-copy-helper');
   el.innerText = str;
+  el.style.color = col;
 }
 
 function setHex(str){
+  str = str.toUpperCase();
   const swatch = document.getElementById('poppy-hex-title');
   const swatchTitle = document.getElementById('poppy-color-swatch');
   const copyHex = document.getElementById('copy-hex');
@@ -145,6 +159,20 @@ function hexToRgb(hex) {
   return result ? `(${r},${g},${b})` : '(0,0,0)';
 }
 
+function rgbToHex(r, g, b) {
+  r = r.trim();
+  g = g.trim();
+  b = b.trim();
+  // Convert each color component to a hexadecimal string
+  const redHex = Number(r).toString(16).padStart(2, "0");
+  const greenHex = Number(g).toString(16).padStart(2, "0");
+  const blueHex = Number(b).toString(16).padStart(2, "0");
+
+  const hexCode = `#${redHex}${greenHex}${blueHex}`;
+
+  return hexCode;
+}
+
 function hex3_to_hex6(str) {
   const tempStr = str.replace('#', '');
   if (tempStr.length != 3) return str;
@@ -162,8 +190,6 @@ async function loadSettings(){
 }
 
 async function isRestricted(str){
-  // Let regex naturally reject.
-  if (str.length < 3 || str.length > 7) return false;
   // Refresh settings.
   await loadSettings();
 
@@ -171,8 +197,17 @@ async function isRestricted(str){
   // includeHash: t/f
   // includeHashThree: t/f
   // sixDigit: t/f
+  // disableRGB: t/f
+
+  if (poppySettings.disableRGB){
+    let res = rgbReg.exec(str);
+    if (res) return true;
+  }
 
   if (poppySettings.disable) return true;
+
+  // Let regex naturally reject.
+  if (str.length < 3 || str.length > 7) return false;
 
   if (poppySettings.includeHash){
     if (str[0] != '#') return true;

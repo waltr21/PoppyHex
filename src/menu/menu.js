@@ -5,11 +5,13 @@ const disableForSite = document.getElementById('disableForSite');
 const includeHash = document.getElementById('includeHash');
 const sixDigit = document.getElementById('sixDigit');
 const includeHashThree = document.getElementById('includeHashThree');
+const disableRGB = document.getElementById('disableRGB');
+
 loadSettings();
 setListeners();
 
 function setListeners(){
-  const basicChecks = [disable, includeHash, sixDigit, includeHashThree];
+  const basicChecks = [disable, includeHash, sixDigit, includeHashThree, disableRGB];
 
   basicChecks.forEach(check => {
     check.addEventListener('change', function() {
@@ -26,7 +28,7 @@ async function setUIHelpers(){
   const el = document.getElementById('host-name');
   el.innerText = await getPage();
 
-  let validExamples = ['#5f4b8a', '5f4b8a', '#5f4', '5f4'];
+  let validExamples = ['(95,75,138)', '#5f4b8a', '5f4b8a', '#5f4', '5f4'];
   const validEl = document.getElementById('valid-codes');
 
   if (poppySettings.includeHash){
@@ -43,6 +45,10 @@ async function setUIHelpers(){
     spliceHelper(validExamples, validExamples.indexOf('5f4'));
   }
 
+  if (poppySettings.disableRGB){
+    spliceHelper(validExamples, validExamples.indexOf('(95,75,138)'));
+  }
+
   validEl.innerText = validExamples.join(', ');
 }
 
@@ -56,7 +62,7 @@ async function loadSettings(){
   poppySettings = res.poppySettings;
   poppySettings = poppySettings ? JSON.parse(poppySettings) : {};
 
-  const basicChecks = [disable, includeHash, sixDigit, includeHashThree];
+  const basicChecks = [disable, includeHash, sixDigit, includeHashThree, disableRGB];
   basicChecks.forEach(check => {
     check.checked = poppySettings[check.id];
   });
